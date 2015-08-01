@@ -1,0 +1,9 @@
+<hr />
+<p><strong><%=l(:issue_to_parent_task)%></strong></p>
+<div id="issue_tree">
+  <% @issue.ancestors.visible.all.each do |i| %>
+    <% if i.root? %>
+      <%= render_issue_self_and_descendants_tree(i, @issue) %>
+    <% end %>
+  <% end %>
+</div>
