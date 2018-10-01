@@ -10,9 +10,13 @@ module IssuesHelperPatch
   module InstanceMethods
     # 自分と子チケットを表示する
     def render_issue_self_and_descendants_tree(root_issue, this_issue)
-      s = '<form><table class="list issues">'
+      if Redmine::VERSION::MAJOR == 3 && Redmine::VERSION::MINOR == 4 then
+        s = "<form data-cm-url=\"#{issues_context_menu_path}\" action=\"/redmine/issues/#{this_issue.id}\" method=\"post\"><table class=\"list issues odd-even\">"
+      else
+        s = '<form><table class="list issues">'
+      end
       issue_list([root_issue] | root_issue.descendants.visible.sort_by(&:lft)) do |child, level|
-        css = "issue issue-#{child.id} hascontextmenu"
+        css = "issue issue-#{child.id} hascontextmenu #{child.css_classes}"
         css << " idnt idnt-#{level}" if level > 0
         need_strong = (child.id == this_issue.id) ? "font-weight:bold" : ""
         s << content_tag('tr',
